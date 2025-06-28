@@ -1,0 +1,230 @@
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f7f0 0%, #faf8f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  font-size: 1.1rem;
+  color: #3d3225;
+}
+
+/* Custom scrollbar styles with natural colors */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f1eb;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8b299;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b89b7e;
+}
+
+/* Natural animation classes */
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.4s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Natural loading spinner */
+.spinner {
+  border: 3px solid #e8ddd0;
+  border-top: 3px solid #4a8f4a;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced form focus styles */
+.form-input:focus {
+  outline: none;
+  border-color: #4a8f4a;
+  box-shadow: 0 0 0 3px rgba(74, 143, 74, 0.1);
+  background-color: #f0f7f0;
+}
+
+/* Natural button effects */
+.btn-primary {
+  background: linear-gradient(135deg, #4a8f4a 0%, #3a723a 100%);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(74, 143, 74, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #3a723a 0%, #2f5a2f 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(74, 143, 74, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #b89b7e 0%, #a0855f 100%);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(184, 155, 126, 0.2);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #a0855f 0%, #7d6548 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(184, 155, 126, 0.3);
+}
+
+/* Enhanced card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #ffffff 0%, #fefdfb 100%);
+  border: 1px solid #e8ddd0;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(61, 50, 37, 0.1);
+  border-color: #d9c9b5;
+}
+
+/* Natural status badges */
+.status-processing {
+  background: linear-gradient(135deg, #f5ede0 0%, #ede1cc 100%);
+  color: #7d6548;
+  border: 1px solid #d0bb94;
+}
+
+.status-shipped {
+  background: linear-gradient(135deg, #e8ede8 0%, #d1dcd1 100%);
+  color: #2f5a2f;
+  border: 1px solid #afc4af;
+}
+
+.status-delivered {
+  background: linear-gradient(135deg, #f0f7f0 0%, #e1efe1 100%);
+  color: #1e351e;
+  border: 1px solid #9cc99c;
+}
+
+/* Natural tier badges */
+.tier-bronze {
+  background: linear-gradient(135deg, #f5ede0 0%, #ede1cc 100%);
+  color: #7d6548;
+  border: 1px solid #d0bb94;
+}
+
+.tier-silver {
+  background: linear-gradient(135deg, #f5f7f5 0%, #e8ede8 100%);
+  color: #405640;
+  border: 1px solid #afc4af;
+}
+
+.tier-gold {
+  background: linear-gradient(135deg, #fdf6f3 0%, #f5d8c9 100%);
+  color: #a55336;
+  border: 1px solid #edbea5;
+}
+
+.tier-platinum {
+  background: linear-gradient(135deg, #e8ddd0 0%, #d9c9b5 100%);
+  color: #5a4a36;
+  border: 1px solid #c8b299;
+}
+
+/* Responsive table with natural styling */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: linear-gradient(135deg, #ffffff 0%, #fefdfb 100%);
+  border-radius: 12px;
+  border: 1px solid #e8ddd0;
+}
+
+@media (max-width: 768px) {
+  .table-responsive table {
+    font-size: 0.875rem;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Natural background patterns */
+.bg-pattern-leaves {
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(74, 143, 74, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(184, 155, 126, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(101, 136, 101, 0.02) 0%, transparent 50%);
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-after: always;
+  }
+  
+  body {
+    background: white !important;
+    color: #3d3225 !important;
+  }
+}
+
+/* Focus states for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid #4a8f4a;
+  outline-offset: 2px;
+}
+
+/* Natural gradient overlays */
+.overlay-earth {
+  background: linear-gradient(135deg, rgba(232, 221, 208, 0.9) 0%, rgba(217, 201, 181, 0.9) 100%);
+}
+
+.overlay-forest {
+  background: linear-gradient(135deg, rgba(74, 143, 74, 0.9) 0%, rgba(58, 114, 58, 0.9) 100%);
+}
+
+.overlay-sage {
+  background: linear-gradient(135deg, rgba(245, 247, 245, 0.9) 0%, rgba(232, 237, 232, 0.9) 100%);
+}
