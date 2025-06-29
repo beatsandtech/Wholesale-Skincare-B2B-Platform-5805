@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../common/SafeIcon';
+import CompanyLogo from '../components/CompanyLogo';
 import * as FiIcons from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 
-const { FiPackage, FiMail, FiLock, FiEye, FiEyeOff, FiLeaf } = FiIcons;
+const { FiPackage, FiMail, FiLock, FiEye, FiEyeOff } = FiIcons;
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -51,26 +52,10 @@ function Login() {
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="mx-auto h-20 w-20 bg-gradient-to-br from-forest-500 to-forest-600 rounded-2xl flex items-center justify-center shadow-lg"
+            className="flex justify-center mb-6"
           >
-            <SafeIcon icon={FiLeaf} className="text-cream-50 text-3xl" />
+            <CompanyLogo size="large" showTagline={true} linkTo={null} />
           </motion.div>
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-6 text-4xl font-serif font-bold text-earth-800"
-          >
-            Natural Skincare
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-2 text-sm text-earth-600 font-medium"
-          >
-            Wholesale Portal - Welcome Back
-          </motion.p>
         </div>
 
         <motion.form

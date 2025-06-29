@@ -2,11 +2,26 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../common/SafeIcon';
+import CompanyLogo from './CompanyLogo';
 import * as FiIcons from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 
-const { FiHome, FiPackage, FiShoppingCart, FiUser, FiSettings, FiLogOut, FiUpload, FiDollarSign, FiTag, FiLeaf } = FiIcons;
+const {
+  FiHome,
+  FiPackage,
+  FiShoppingCart,
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiUpload,
+  FiDollarSign,
+  FiTag,
+  FiCreditCard,
+  FiBarChart3,
+  FiUsers,
+  FiTool
+} = FiIcons;
 
 function Navigation() {
   const { user, logout } = useAuth();
@@ -23,6 +38,7 @@ function Navigation() {
     { path: '/dashboard', icon: FiHome, label: 'Dashboard' },
     { path: '/products', icon: FiPackage, label: 'Products' },
     { path: '/orders', icon: FiShoppingCart, label: 'My Orders' },
+    { path: '/payments', icon: FiCreditCard, label: 'Payments' },
     { path: '/cart', icon: FiShoppingCart, label: 'Cart', badge: getCartItemCount() }
   ];
 
@@ -34,7 +50,10 @@ function Navigation() {
     { path: '/admin/products', icon: FiPackage, label: 'Manage Products' },
     { path: '/admin/categories', icon: FiTag, label: 'Categories' },
     { path: '/admin/bulk-import', icon: FiUpload, label: 'Bulk Import' },
-    { path: '/admin/pricing', icon: FiDollarSign, label: 'Pricing Tiers' }
+    { path: '/admin/pricing', icon: FiDollarSign, label: 'Pricing Tiers' },
+    { path: '/admin/users', icon: FiUsers, label: 'Users' },
+    { path: '/admin/reports', icon: FiBarChart3, label: 'Reports' },
+    { path: '/system-settings', icon: FiTool, label: 'System Settings' }
   ];
 
   const navItems = user?.role === 'admin' ? adminNavItems : buyerNavItems;
@@ -44,40 +63,26 @@ function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/dashboard" className="flex items-center space-x-3 group">
-              <motion.div
-                whileHover={{ rotate: 5, scale: 1.05 }}
-                className="w-10 h-10 bg-gradient-to-br from-forest-500 to-forest-600 rounded-xl flex items-center justify-center shadow-md"
-              >
-                <SafeIcon icon={FiLeaf} className="text-cream-50 text-xl" />
-              </motion.div>
-              <div className="flex flex-col">
-                <span className="text-xl font-serif font-bold text-earth-800 group-hover:text-forest-700 transition-colors">
-                  Natural Skincare
-                </span>
-                <span className="text-xs text-earth-500 bg-gradient-to-r from-sage-100 to-earth-100 px-2 py-0.5 rounded-full border border-sage-200">
-                  Wholesale Portal
-                </span>
-              </div>
-            </Link>
+            <CompanyLogo size="default" showTagline={true} linkTo="/dashboard" />
           </div>
 
-          <div className="flex items-center space-x-1">
+          {/* Main Navigation - Scrollable on smaller screens */}
+          <div className="flex items-center overflow-x-auto scrollbar-hide space-x-1 flex-1 mx-4">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
-                <Link key={item.path} to={item.path} className="relative">
+                <Link key={item.path} to={item.path} className="relative flex-shrink-0">
                   <motion.div
                     whileHover={{ scale: 1.05, y: -1 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                       isActive
                         ? 'bg-gradient-to-r from-forest-100 to-sage-100 text-forest-700 border border-forest-200 shadow-sm'
                         : 'text-earth-600 hover:text-forest-700 hover:bg-gradient-to-r hover:from-sage-50 hover:to-earth-50 hover:border hover:border-sage-200'
                     }`}
                   >
                     <SafeIcon icon={item.icon} className="text-lg" />
-                    <span className="hidden sm:block">{item.label}</span>
+                    <span className="hidden lg:block">{item.label}</span>
                     {item.badge > 0 && (
                       <motion.span
                         initial={{ scale: 0 }}
@@ -103,6 +108,7 @@ function Navigation() {
                 </span>
               )}
             </div>
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

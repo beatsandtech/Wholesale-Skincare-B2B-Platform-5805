@@ -3,19 +3,23 @@ import { motion } from 'framer-motion';
 import SafeIcon from '../common/SafeIcon';
 import * as FiIcons from 'react-icons/fi';
 
-const { FiUpload, FiX, FiImage, FiCamera } = FiIcons;
+const { FiUpload, FiX, FiImage, FiCamera, FiCheck } = FiIcons;
 
-function ImageUpload({ value, onChange, className = "" }) {
+function ImageUpload({ value, onChange, className = "", acceptedFormats = "image/*" }) {
   const [preview, setPreview] = useState(value || null);
   const [isDragging, setIsDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (file) => {
     if (file && file.type.startsWith('image/')) {
+      setUploading(true);
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageUrl = e.target.result;
         setPreview(imageUrl);
+        setUploading(false);
         onChange && onChange(imageUrl);
       };
       reader.readAsDataURL(file);
@@ -61,7 +65,7 @@ function ImageUpload({ value, onChange, className = "" }) {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept={acceptedFormats}
         onChange={handleFileChange}
         className="hidden"
       />
@@ -105,31 +109,47 @@ function ImageUpload({ value, onChange, className = "" }) {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${
-            isDragging 
-              ? 'border-forest-400 bg-gradient-to-br from-forest-50 to-sage-50 shadow-lg' 
+            isDragging
+              ? 'border-forest-400 bg-gradient-to-br from-forest-50 to-sage-50 shadow-lg'
               : 'border-earth-300 hover:border-forest-400 hover:bg-gradient-to-br hover:from-sage-50 hover:to-cream-50 bg-white/50'
           }`}
         >
           <div className="w-16 h-16 bg-gradient-to-br from-earth-200 to-earth-300 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <SafeIcon icon={FiUpload} className="text-earth-600 text-2xl" />
+            {uploading ? (
+              <div className="spinner"></div>
+            ) : (
+              <SafeIcon icon={FiUpload} className="text-earth-600 text-2xl" />
+            )}
           </div>
+          
           <p className="text-lg text-earth-700 mb-2 font-medium">
-            {isDragging ? 'Drop your natural product image here' : 'Click to upload or drag & drop'}
+            {uploading ? 'Processing your image...' : isDragging ? 'Drop your image here' : 'Click to upload or drag & drop'}
           </p>
+          
           <p className="text-sm text-earth-500">
-            PNG, JPG, GIF up to 10MB
+            PNG, JPG, GIF, SVG up to 5MB
           </p>
+          
           <div className="mt-4 flex items-center justify-center space-x-4 text-xs text-earth-400">
             <span className="flex items-center">
               <SafeIcon icon={FiImage} className="mr-1" />
               High Quality
             </span>
             <span>•</span>
-            <span>Natural Lighting</span>
+            <span>Square Format Preferred</span>
             <span>•</span>
-            <span>Product Focus</span>
+            <span>Transparent Background</span>
           </div>
         </motion.div>
+      )}
+
+      {uploading && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+          <div className="text-center">
+            <div className="spinner mx-auto mb-2"></div>
+            <p className="text-sm text-earth-600">Processing image...</p>
+          </div>
+        </div>
       )}
     </div>
   );
