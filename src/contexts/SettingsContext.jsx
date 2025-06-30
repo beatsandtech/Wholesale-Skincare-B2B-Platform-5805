@@ -79,6 +79,77 @@ export function SettingsProvider({ children }) {
       inventorySync: false,
       autoBackups: true,
       backupFrequency: 'daily',
+    },
+    // Webhook Settings
+    webhooks: {
+      enabled: false,
+      events: {
+        orderCreated: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        orderUpdated: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        orderCancelled: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        paymentReceived: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        paymentFailed: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        userRegistered: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        inventoryLow: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        },
+        customEvent: {
+          enabled: false,
+          url: '',
+          secret: '',
+          retryAttempts: 3,
+          timeout: 30
+        }
+      },
+      globalSettings: {
+        userAgent: 'Natural-Skincare-Webhooks/1.0',
+        contentType: 'application/json',
+        includeTimestamp: true,
+        includeSignature: true,
+        signatureHeader: 'X-Webhook-Signature',
+        retryDelay: 5000,
+        maxRetries: 3
+      }
     }
   });
 
@@ -139,16 +210,12 @@ export function SettingsProvider({ children }) {
 
   const saveSectionSettings = async (section) => {
     setSaveStatus({ [section]: 'saving' });
-    
     try {
       console.log(`Manually saving ${section} section:`, settings[section]);
-      
       // Settings are already saved to localStorage via useEffect
       // This is just for UI feedback
       await new Promise(resolve => setTimeout(resolve, 500));
-      
       setSaveStatus({ [section]: 'success' });
-      
       console.log(`${section} settings saved successfully`);
       
       // Clear success status after 3 seconds
@@ -197,6 +264,28 @@ export function SettingsProvider({ children }) {
         timezone: 'America/Los_Angeles',
         dateFormat: 'MM/DD/YYYY',
         currency: 'USD',
+      },
+      webhooks: {
+        enabled: false,
+        events: {
+          orderCreated: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          orderUpdated: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          orderCancelled: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          paymentReceived: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          paymentFailed: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          userRegistered: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          inventoryLow: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 },
+          customEvent: { enabled: false, url: '', secret: '', retryAttempts: 3, timeout: 30 }
+        },
+        globalSettings: {
+          userAgent: 'Natural-Skincare-Webhooks/1.0',
+          contentType: 'application/json',
+          includeTimestamp: true,
+          includeSignature: true,
+          signatureHeader: 'X-Webhook-Signature',
+          retryDelay: 5000,
+          maxRetries: 3
+        }
       }
     };
 
@@ -209,6 +298,71 @@ export function SettingsProvider({ children }) {
     }
   };
 
+  // Webhook utility functions
+  const sendWebhook = async (eventType, payload) => {
+    const webhookConfig = settings.webhooks;
+    const eventConfig = webhookConfig.events[eventType];
+    
+    if (!webhookConfig.enabled || !eventConfig.enabled || !eventConfig.url) {
+      console.log(`Webhook for ${eventType} is disabled or not configured`);
+      return { success: false, reason: 'disabled' };
+    }
+
+    const webhookPayload = {
+      event: eventType,
+      timestamp: new Date().toISOString(),
+      data: payload
+    };
+
+    if (webhookConfig.globalSettings.includeSignature && eventConfig.secret) {
+      // In a real implementation, you would generate HMAC signature here
+      webhookPayload.signature = 'sha256=mock_signature';
+    }
+
+    try {
+      const response = await fetch(eventConfig.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': webhookConfig.globalSettings.contentType,
+          'User-Agent': webhookConfig.globalSettings.userAgent,
+          ...(webhookConfig.globalSettings.includeSignature && eventConfig.secret ? {
+            [webhookConfig.globalSettings.signatureHeader]: webhookPayload.signature
+          } : {})
+        },
+        body: JSON.stringify(webhookPayload),
+        signal: AbortSignal.timeout(eventConfig.timeout * 1000)
+      });
+
+      if (response.ok) {
+        console.log(`Webhook ${eventType} sent successfully`);
+        return { success: true, response };
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error(`Webhook ${eventType} failed:`, error);
+      
+      // Implement retry logic
+      if (eventConfig.retryAttempts > 0) {
+        setTimeout(() => {
+          sendWebhook(eventType, payload);
+        }, webhookConfig.globalSettings.retryDelay);
+      }
+      
+      return { success: false, error: error.message };
+    }
+  };
+
+  const testWebhook = async (eventType) => {
+    const testPayload = {
+      test: true,
+      message: `Test webhook for ${eventType} event`,
+      timestamp: new Date().toISOString()
+    };
+
+    return await sendWebhook(eventType, testPayload);
+  };
+
   const value = {
     settings,
     updateSetting,
@@ -216,6 +370,8 @@ export function SettingsProvider({ children }) {
     saveSectionSettings,
     resetSection,
     saveStatus,
+    sendWebhook,
+    testWebhook,
     // Helper functions
     getBrandingSettings: () => settings.branding,
     getBusinessSettings: () => settings.business,
@@ -223,6 +379,7 @@ export function SettingsProvider({ children }) {
     getEmailSettings: () => settings.email,
     getSecuritySettings: () => settings.security,
     getIntegrationSettings: () => settings.integrations,
+    getWebhookSettings: () => settings.webhooks,
   };
 
   return (

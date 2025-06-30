@@ -6,7 +6,7 @@ import CompanyLogo from '../components/CompanyLogo';
 import * as FiIcons from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 
-const { FiPackage, FiMail, FiLock, FiEye, FiEyeOff } = FiIcons;
+const { FiPackage, FiMail, FiLock, FiEye, FiEyeOff, FiShield, FiCrown, FiUser } = FiIcons;
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -30,6 +30,41 @@ function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const demoAccounts = [
+    {
+      email: 'admin@skincare.com',
+      role: 'Administrator',
+      description: 'Full system access with all permissions',
+      icon: FiCrown,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      borderColor: 'border-purple-200'
+    },
+    {
+      email: 'manager@skincare.com',
+      role: 'Manager',
+      description: 'Product and order management access',
+      icon: FiShield,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    },
+    {
+      email: 'buyer@retailer.com',
+      role: 'Buyer',
+      description: 'Customer access for browsing and ordering',
+      icon: FiUser,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200'
+    }
+  ];
+
+  const quickLogin = (accountEmail) => {
+    setEmail(accountEmail);
+    setPassword('password123');
   };
 
   return (
@@ -142,19 +177,43 @@ function Login() {
           </div>
 
           <div className="mt-6 p-6 bg-gradient-to-br from-sage-50 to-earth-50 rounded-xl border border-sage-200">
-            <h3 className="text-sm font-medium text-earth-700 mb-3 flex items-center">
+            <h3 className="text-sm font-medium text-earth-700 mb-4 flex items-center">
               <SafeIcon icon={FiPackage} className="mr-2 text-forest-600" />
-              Demo Accounts
+              Demo Accounts - Role-Based Access
             </h3>
-            <div className="space-y-2 text-xs text-earth-600">
-              <div className="flex justify-between items-center p-2 bg-white/60 rounded-lg">
-                <span><strong className="text-forest-700">Admin:</strong> admin@skincare.com</span>
-                <code className="text-earth-500 bg-earth-100 px-2 py-1 rounded text-xs">password123</code>
-              </div>
-              <div className="flex justify-between items-center p-2 bg-white/60 rounded-lg">
-                <span><strong className="text-forest-700">Buyer:</strong> buyer@retailer.com</span>
-                <code className="text-earth-500 bg-earth-100 px-2 py-1 rounded text-xs">password123</code>
-              </div>
+            <div className="space-y-3">
+              {demoAccounts.map((account, index) => (
+                <motion.div
+                  key={account.email}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 + index * 0.1 }}
+                  className={`p-3 ${account.bgColor} ${account.borderColor} border rounded-lg cursor-pointer hover:shadow-md transition-all duration-200`}
+                  onClick={() => quickLogin(account.email)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 ${account.bgColor} rounded-full flex items-center justify-center border ${account.borderColor}`}>
+                        <SafeIcon icon={account.icon} className={`${account.color} text-sm`} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-earth-800">{account.role}</p>
+                        <p className="text-xs text-earth-600">{account.email}</p>
+                      </div>
+                    </div>
+                    <code className="text-earth-500 bg-earth-100 px-2 py-1 rounded text-xs">
+                      password123
+                    </code>
+                  </div>
+                  <p className="text-xs text-earth-600 mt-2 ml-11">{account.description}</p>
+                </motion.div>
+              ))}
+            </div>
+            <div className="mt-4 p-3 bg-white/60 rounded-lg border border-earth-200">
+              <p className="text-xs text-earth-600">
+                <strong>Note:</strong> Each role has different permissions and will show different navigation options and features. 
+                Try logging in with different roles to see the role-based access control in action.
+              </p>
             </div>
           </div>
         </motion.form>

@@ -14,19 +14,27 @@ function Orders() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'processing': return 'bg-terracotta-100 text-terracotta-800 border-terracotta-200';
-      case 'shipped': return 'bg-sage-100 text-sage-800 border-sage-200';
-      case 'delivered': return 'bg-forest-100 text-forest-800 border-forest-200';
-      default: return 'bg-earth-100 text-earth-800 border-earth-200';
+      case 'processing':
+        return 'bg-terracotta-100 text-terracotta-800 border-terracotta-200';
+      case 'shipped':
+        return 'bg-sage-100 text-sage-800 border-sage-200';
+      case 'delivered':
+        return 'bg-forest-100 text-forest-800 border-forest-200';
+      default:
+        return 'bg-earth-100 text-earth-800 border-earth-200';
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'processing': return FiClock;
-      case 'shipped': return FiTruck;
-      case 'delivered': return FiCheck;
-      default: return FiPackage;
+      case 'processing':
+        return FiClock;
+      case 'shipped':
+        return FiTruck;
+      case 'delivered':
+        return FiCheck;
+      default:
+        return FiPackage;
     }
   };
 
@@ -92,8 +100,7 @@ function Orders() {
                       <p className="text-earth-600">
                         {order.deliveredDate
                           ? format(new Date(order.deliveredDate), 'MMM d, yyyy')
-                          : format(new Date(order.estimatedDelivery), 'MMM d, yyyy')
-                        }
+                          : format(new Date(order.estimatedDelivery), 'MMM d, yyyy')}
                       </p>
                     </div>
                   </div>

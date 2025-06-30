@@ -4,10 +4,7 @@ import { motion } from 'framer-motion';
 import SafeIcon from '../common/SafeIcon';
 import * as FiIcons from 'react-icons/fi';
 
-const { 
-  FiPackage, FiUsers, FiDollarSign, FiUpload, FiSettings, FiBarChart3, 
-  FiTrendingUp, FiTag, FiTool
-} = FiIcons;
+const { FiPackage, FiUsers, FiDollarSign, FiUpload, FiSettings, FiBarChart3, FiTrendingUp, FiTag, FiTool } = FiIcons;
 
 function AdminPanel() {
   const adminActions = [
@@ -75,28 +72,32 @@ function AdminPanel() {
       value: '127',
       change: '+12',
       icon: FiPackage,
-      color: 'text-forest-600'
+      color: 'text-forest-600',
+      bgColor: 'bg-forest-100'
     },
     {
       title: 'Active Buyers',
       value: '34',
       change: '+3',
       icon: FiUsers,
-      color: 'text-sage-600'
+      color: 'text-sage-600',
+      bgColor: 'bg-sage-100'
     },
     {
       title: 'Monthly Revenue',
       value: '$45,230',
       change: '+18%',
       icon: FiDollarSign,
-      color: 'text-terracotta-600'
+      color: 'text-terracotta-600',
+      bgColor: 'bg-terracotta-100'
     },
     {
       title: 'Orders This Month',
       value: '89',
       change: '+25%',
       icon: FiTrendingUp,
-      color: 'text-earth-600'
+      color: 'text-earth-600',
+      bgColor: 'bg-earth-100'
     }
   ];
 
@@ -122,7 +123,7 @@ function AdminPanel() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-gradient-to-br ${stat.bgColor} backdrop-blur-sm rounded-2xl shadow-lg border ${stat.borderColor} p-6 hover:shadow-xl transition-all duration-300 card-hover`}
+              className={`bg-gradient-to-br ${stat.bgColor} backdrop-blur-sm rounded-2xl shadow-lg border border-earth-200 p-6 hover:shadow-xl transition-all duration-300 card-hover`}
             >
               <div className="flex items-center justify-between">
                 <div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { RoleProvider } from './contexts/RoleContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { CartProvider } from './contexts/CartContext';
 import { CategoryProvider } from './contexts/CategoryContext';
@@ -8,6 +9,8 @@ import { PaymentProvider } from './contexts/PaymentContext';
 import { OrderProvider } from './contexts/OrderContext';
 import BrandingWrapper from './components/BrandingWrapper';
 import Navigation from './components/Navigation';
+import InteractiveCartIcon from './components/InteractiveCartIcon';
+import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
@@ -26,28 +29,6 @@ import PaymentHistory from './pages/PaymentHistory';
 import SystemSettings from './pages/SystemSettings';
 import './App.css';
 
-function ProtectedRoute({ children, adminOnly = false }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-natural-gradient flex items-center justify-center">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (adminOnly && user.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return children;
-}
-
 function AppContent() {
   const { user } = useAuth();
 
@@ -55,12 +36,15 @@ function AppContent() {
     <BrandingWrapper>
       <div className="min-h-screen bg-natural-gradient">
         {user && <Navigation />}
+        {user && <InteractiveCartIcon />}
         <Routes>
           <Route path="/login" element={<Login />} />
+          
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['dashboard.view_buyer', 'dashboard.view_admin']}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -68,7 +52,7 @@ function AppContent() {
           <Route
             path="/products"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['products.view']}>
                 <Products />
               </ProtectedRoute>
             }
@@ -76,7 +60,7 @@ function AppContent() {
           <Route
             path="/orders"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['orders.view_own', 'orders.view_all']}>
                 <Orders />
               </ProtectedRoute>
             }
@@ -84,7 +68,7 @@ function AppContent() {
           <Route
             path="/orders/track/:orderId"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['orders.view_own', 'orders.view_all']}>
                 <OrderTracking />
               </ProtectedRoute>
             }
@@ -92,7 +76,7 @@ function AppContent() {
           <Route
             path="/orders/track"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['orders.view_own', 'orders.view_all']}>
                 <OrderTracking />
               </ProtectedRoute>
             }
@@ -100,7 +84,7 @@ function AppContent() {
           <Route
             path="/cart"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['cart.manage']}>
                 <Cart />
               </ProtectedRoute>
             }
@@ -108,7 +92,7 @@ function AppContent() {
           <Route
             path="/checkout"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['checkout.process']}>
                 <Checkout />
               </ProtectedRoute>
             }
@@ -116,15 +100,17 @@ function AppContent() {
           <Route
             path="/payments"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permissions={['payments.view_own', 'payments.view_all']}>
                 <PaymentHistory />
               </ProtectedRoute>
             }
           />
+
+          {/* Admin Routes */}
           <Route
             path="/admin"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['dashboard.view_admin']}>
                 <AdminPanel />
               </ProtectedRoute>
             }
@@ -132,7 +118,7 @@ function AppContent() {
           <Route
             path="/admin/products"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['products.create', 'products.edit']}>
                 <ProductManagement />
               </ProtectedRoute>
             }
@@ -140,7 +126,7 @@ function AppContent() {
           <Route
             path="/admin/categories"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['categories.create', 'categories.edit']}>
                 <CategoryManagement />
               </ProtectedRoute>
             }
@@ -148,7 +134,7 @@ function AppContent() {
           <Route
             path="/admin/bulk-import"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['products.bulk_import']}>
                 <BulkImport />
               </ProtectedRoute>
             }
@@ -156,7 +142,7 @@ function AppContent() {
           <Route
             path="/admin/pricing"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['pricing.edit']}>
                 <PricingTiers />
               </ProtectedRoute>
             }
@@ -164,7 +150,7 @@ function AppContent() {
           <Route
             path="/admin/users"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['users.view']}>
                 <UserManagement />
               </ProtectedRoute>
             }
@@ -172,7 +158,7 @@ function AppContent() {
           <Route
             path="/admin/reports"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['reports.view_basic']}>
                 <Reports />
               </ProtectedRoute>
             }
@@ -180,11 +166,13 @@ function AppContent() {
           <Route
             path="/system-settings"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute permissions={['settings.view']}>
                 <SystemSettings />
               </ProtectedRoute>
             }
           />
+
+          {/* Default Redirects */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
@@ -198,15 +186,17 @@ function App() {
     <Router>
       <SettingsProvider>
         <AuthProvider>
-          <CategoryProvider>
-            <CartProvider>
-              <OrderProvider>
-                <PaymentProvider>
-                  <AppContent />
-                </PaymentProvider>
-              </OrderProvider>
-            </CartProvider>
-          </CategoryProvider>
+          <RoleProvider>
+            <CategoryProvider>
+              <CartProvider>
+                <OrderProvider>
+                  <PaymentProvider>
+                    <AppContent />
+                  </PaymentProvider>
+                </OrderProvider>
+              </CartProvider>
+            </CategoryProvider>
+          </RoleProvider>
         </AuthProvider>
       </SettingsProvider>
     </Router>

@@ -23,19 +23,28 @@ export function AuthProvider({ children }) {
     // Simulate API call
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Demo users
+        // Demo users with different roles
         const demoUsers = {
-          'admin@skincare.com': { 
-            id: 1, 
-            email: 'admin@skincare.com', 
-            name: 'Admin User', 
+          'admin@skincare.com': {
+            id: 1,
+            email: 'admin@skincare.com',
+            name: 'Admin User',
             role: 'admin',
-            company: 'Natural Skincare Co.'
+            company: 'Natural Skincare Co.',
+            tier: 'platinum'
           },
-          'buyer@retailer.com': { 
-            id: 2, 
-            email: 'buyer@retailer.com', 
-            name: 'John Buyer', 
+          'manager@skincare.com': {
+            id: 2,
+            email: 'manager@skincare.com',
+            name: 'Manager User',
+            role: 'manager',
+            company: 'Natural Skincare Co.',
+            tier: 'gold'
+          },
+          'buyer@retailer.com': {
+            id: 3,
+            email: 'buyer@retailer.com',
+            name: 'John Buyer',
             role: 'buyer',
             company: 'Premium Beauty Retailers',
             tier: 'gold'
